@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import com.eic.springchatapp.model.Message;
+import com.eic.springchatapp.model.MessageTemplate;
 
 
 
@@ -29,10 +29,10 @@ public class ChatController {
 	
 	@MessageMapping("/chat/{roomID}")
 	//@SendTo("/topic")
-	public void chatEndPoint(@DestinationVariable String roomID , @Payload Message message) {
+	public void chatEndPoint(@DestinationVariable String roomID , @Payload MessageTemplate messageTemplate) {
 		
-		System.out.println(message);		
-		messagingTemp.convertAndSend("/topic/"+roomID, message);	
+		System.out.println(messageTemplate);		
+		messagingTemp.convertAndSend("/topic/"+roomID, messageTemplate);	
 	}
 	
 	

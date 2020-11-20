@@ -1,19 +1,19 @@
-package com.eic.springchatapp.model;
+package com.eic.springchatapp.api.model;
 
-public class MRequest {
+public class GenericRequest {
 
 	private String username;
 	private String roomname;
 	private String password;
 	
-	public MRequest(String username, String roomname, String password) {
+	public GenericRequest(String username, String roomname, String password) {
 		super();
 		this.username = username;
 		this.roomname = roomname;
 		this.password = password;
 	}
 	
-	public MRequest(){
+	public GenericRequest(){
 		
 	}
 	public String getUsername() {

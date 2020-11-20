@@ -1,4 +1,4 @@
-package com.eic.springchatapp.model;
+package com.eic.springchatapp.api.model;
 
 
 import java.util.ArrayList;

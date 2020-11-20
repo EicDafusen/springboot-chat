@@ -1,6 +1,6 @@
 package com.eic.springchatapp.model;
 
-public class Message {
+public class MessageTemplate {
 	
 	private String sender;
 	private String content;

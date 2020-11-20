@@ -1,10 +1,10 @@
-package com.eic.springchatapp.repository;
+package com.eic.springchatapp.api.repository;
 
 
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.eic.springchatapp.model.Room;
+import com.eic.springchatapp.api.model.Room;
 
 
 

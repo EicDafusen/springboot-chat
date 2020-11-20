@@ -8,14 +8,14 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.repository.Query;
 
-import com.eic.springchatapp.model.Room;
-import com.eic.springchatapp.repository.RoomRepository;
+import com.eic.springchatapp.api.model.Room;
+import com.eic.springchatapp.api.repository.RoomRepository;
 
 @SpringBootApplication
-public class SprirngbootWebsocket1Application  implements CommandLineRunner{
+public class SpringBootWebSocketApp  implements CommandLineRunner{
 
 	public static void main(String[] args) {
-		SpringApplication.run(SprirngbootWebsocket1Application.class, args);
+		SpringApplication.run(SpringBootWebSocketApp.class, args);
 	}
 
 	
