@@ -12,30 +12,23 @@ import com.eic.springchatapp.api.model.Room;
 import com.eic.springchatapp.api.repository.RoomRepository;
 
 @SpringBootApplication
-public class SpringBootWebSocketApp  implements CommandLineRunner{
+public class SpringBootWebSocketApp implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootWebSocketApp.class, args);
 	}
 
-	
 	@Autowired
 	RoomRepository repo;
-	
+
 	@Override
 	public void run(String... args) throws Exception {
-		
-		
+
 		repo.deleteAll();
-		
-		repo.insert( new Room("room1","123"));
-		repo.insert( new Room("room2","456"));
-		
-	
-	
-		
-		
-		
+
+		repo.insert(new Room("room1", "123"));
+		repo.insert(new Room("room2", "456"));
+
 	}
 
 }

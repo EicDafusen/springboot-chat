@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.eic.springchatapp.model.MessageTemplate;
 
-
-
 /*  	TODO
  * 
  * 	-Validation
@@ -22,21 +20,16 @@ import com.eic.springchatapp.model.MessageTemplate;
 @Controller
 @CrossOrigin // ???
 public class ChatController {
-	
+
 	@Autowired
 	private SimpMessagingTemplate messagingTemp;
-	
-	
+
 	@MessageMapping("/chat/{roomID}")
-	//@SendTo("/topic")
-	public void chatEndPoint(@DestinationVariable String roomID , @Payload MessageTemplate messageTemplate) {
-		
-		System.out.println(messageTemplate);		
-		messagingTemp.convertAndSend("/topic/"+roomID, messageTemplate);	
+	// @SendTo("/topic")
+	public void chatEndPoint(@DestinationVariable String roomID, @Payload MessageTemplate messageTemplate) {
+
+		System.out.println(messageTemplate);
+		messagingTemp.convertAndSend("/topic/" + roomID, messageTemplate);
 	}
-	
-	
-	
-	
 
 }
