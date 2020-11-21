@@ -1,5 +1,7 @@
 package com.eic.springchatapp.api.controller;
 
+import java.util.List;
+
 import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
 import javax.validation.Validation;
@@ -41,7 +43,7 @@ public class RoomController {
 
 	// Adding a new room and adding user in it
 
-	@PostMapping("/addRoom")
+	@PostMapping("/create")
 	ResponseEntity<?> addRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
@@ -51,7 +53,7 @@ public class RoomController {
 
 		} else {
 
-			GenericResponse Response = roomService.createRoom(genericRequest.getRoomname(),
+			GenericResponse<Room> Response = roomService.createRoom(genericRequest.getRoomname(),
 					genericRequest.getPassword());
 			if (Response.getStatusCode() == HttpStatus.CREATED) {
 				return joinRoom(genericRequest, bindingResult);
@@ -65,7 +67,7 @@ public class RoomController {
 	}
 
 	// Adding the user to room
-	@PostMapping("/joinRoom")
+	@PostMapping("/join")
 	ResponseEntity<?> joinRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
@@ -73,11 +75,11 @@ public class RoomController {
 
 		} else {
 
-			GenericResponse Response = roomService.addUserToRoon(genericRequest.getUsername(),
+			GenericResponse<Room> Response = roomService.addUserToRoom(genericRequest.getUsername(),
 					genericRequest.getRoomname(), genericRequest.getPassword());
 
 			if (Response.getStatusCode() == HttpStatus.CREATED) {
-				return ResponseEntity.status(Response.getStatusCode()).body(Response.getRoom());
+				return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 			} else {
 				return ResponseEntity.status(Response.getStatusCode()).body(Response.getMessage());
 
@@ -87,18 +89,18 @@ public class RoomController {
 	}
 
 	// Adding the user to room
-	@PostMapping("/getUsersInRoom")
-	ResponseEntity<?> getUsersInRoom(@RequestBody GenericRequest genericRequest) {
+	@PostMapping("/users")
+	ResponseEntity<?> getUsersInRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult) {
 
-		Room room = roomRepository.findByNameAndPassword(genericRequest.getRoomname(), genericRequest.getPassword());
+		if (bindingResult.hasErrors()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
-		if (room != null) {
-
-			return ResponseEntity.ok().body(room.getUsers());
 		} else {
 
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body("");
+			GenericResponse<List<String>> Response = roomService.getUsesInRoom(genericRequest.getRoomname());
+			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 		}
+
 
 	}
 

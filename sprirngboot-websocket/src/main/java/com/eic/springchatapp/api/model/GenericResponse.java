@@ -2,11 +2,11 @@ package com.eic.springchatapp.api.model;
 
 import org.springframework.http.HttpStatus;
 
-public class GenericResponse {
+public class GenericResponse<T> {
 
 	private HttpStatus statusCode;
 	private String message;
-	private Room room;
+	private T data;
 
 	public HttpStatus getStatusCode() {
 		return statusCode;
@@ -24,19 +24,19 @@ public class GenericResponse {
 		this.message = message;
 	}
 
-	public Room getRoom() {
-		return room;
+	public  T getData() {
+		return data;
 	}
 
-	public void setRoom(Room room) {
-		this.room = room;
+	public void setData( T data) {
+		this.data = data;
 	}
 
-	public GenericResponse(HttpStatus statusCode, String message, Room room) {
+	public GenericResponse(HttpStatus statusCode, String message, T data) {
 		super();
 		this.statusCode = statusCode;
 		this.message = message;
-		this.room = room;
+		this.data = data;
 	}
 
 }

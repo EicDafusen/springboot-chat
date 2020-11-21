@@ -1,5 +1,7 @@
 package com.eic.springchatapp.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,7 @@ public class RoomService {
 	@Autowired
 	RoomRepository roomRepository;
 
-	public GenericResponse createRoom(String roomName, String roomPassword) {
+	public GenericResponse<Room> createRoom(String roomName, String roomPassword) {
 
 		
 		if (roomRepository.findByName(roomName) == null) {
@@ -25,35 +27,49 @@ public class RoomService {
 
 			roomRepository.save(newRoom);
 
-			return new GenericResponse(HttpStatus.CREATED, "Room Created", newRoom);
+			return new GenericResponse<Room>(HttpStatus.CREATED, "Room Created", newRoom);
 
 		} else {
 
-			return new GenericResponse(HttpStatus.CONFLICT, "Duplicate Room Name", null);
+			return new GenericResponse<Room>(HttpStatus.CONFLICT, "Duplicate Room Name", null);
 
 		}
 	}
 
-	public GenericResponse addUserToRoon(String userName, String roomName, String roomPassword) {
+	public GenericResponse<Room> addUserToRoom(String userName, String roomName, String roomPassword) {
 
 		Room room = roomRepository.findByNameAndPassword(roomName, roomPassword);
 
 		if (room == null) {
-			return new GenericResponse(HttpStatus.FORBIDDEN, "Could Not Find The With Given Credentials", null);
+			return new GenericResponse<Room>(HttpStatus.FORBIDDEN, "Could Not Find The With Given Credentials", null);
 
 		} else if (room.getUsers().contains(userName)) {
-			return new GenericResponse(HttpStatus.CONFLICT, "User Already In Room", null);
+			return new GenericResponse<Room>(HttpStatus.CONFLICT, "User Already In Room", null);
 
 		} else if (room.getUsers().size() >= MAX_USER_CAPACITY) {
-			return new GenericResponse(HttpStatus.NOT_ACCEPTABLE, "Room Capacity Is Full", null);
+			return new GenericResponse<Room>(HttpStatus.NOT_ACCEPTABLE, "Room Capacity Is Full", null);
 
 		} else {
 
 			room.getUsers().add(userName);
 			roomRepository.save(room);
-			return new GenericResponse(HttpStatus.OK, "User jonied " + roomName, room);
+			return new GenericResponse<Room>(HttpStatus.OK, "User jonied " + roomName, room);
 
 		}
 	}
 
+	
+	public GenericResponse<List<String>> getUsesInRoom(String roomName){
+		Room room = roomRepository.findByName(roomName);
+		
+		if (room == null) {
+			return new GenericResponse<List<String>>(HttpStatus.FORBIDDEN, "Could Not Find The With Given Credentials", null);
+
+		}else {
+			List<String> userList = room.getUsers();
+			return new GenericResponse<List<String>>(HttpStatus.FORBIDDEN, "Users List Found", userList);
+
+		}
+		
+	}
 }
