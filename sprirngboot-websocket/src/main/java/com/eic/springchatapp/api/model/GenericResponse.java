@@ -39,4 +39,9 @@ public class GenericResponse<T> {
 		this.data = data;
 	}
 
+	public GenericResponse(HttpStatus statusCode,  T data) {
+		super();
+		this.statusCode = statusCode;
+		this.data = data;
+	}
 }

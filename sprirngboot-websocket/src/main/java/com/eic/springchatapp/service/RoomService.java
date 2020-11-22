@@ -18,58 +18,91 @@ public class RoomService {
 	@Autowired
 	RoomRepository roomRepository;
 
-	public GenericResponse<Room> createRoom(String roomName, String roomPassword) {
+	public GenericResponse<?> createRoom(String userName, String roomName, String roomPassword) {
 
-		
 		if (roomRepository.findByName(roomName) == null) {
 
 			Room newRoom = new Room(roomName, roomPassword);
 
 			roomRepository.save(newRoom);
 
-			return new GenericResponse<Room>(HttpStatus.CREATED, "Room Created", newRoom);
+			return addUserToRoom(userName, roomName, roomPassword);
 
 		} else {
 
-			return new GenericResponse<Room>(HttpStatus.CONFLICT, "Duplicate Room Name", null);
+			return new GenericResponse<String>(HttpStatus.CONFLICT, "Duplicate Room Name");
 
 		}
 	}
 
-	public GenericResponse<Room> addUserToRoom(String userName, String roomName, String roomPassword) {
+	public GenericResponse<?> addUserToRoom(String userName, String roomName, String roomPassword) {
 
 		Room room = roomRepository.findByNameAndPassword(roomName, roomPassword);
 
 		if (room == null) {
-			return new GenericResponse<Room>(HttpStatus.FORBIDDEN, "Could Not Find The With Given Credentials", null);
+			return new GenericResponse<String>(HttpStatus.FORBIDDEN, "Could Not Find A Room  With Given Credentials");
 
 		} else if (room.getUsers().contains(userName)) {
-			return new GenericResponse<Room>(HttpStatus.CONFLICT, "User Already In Room", null);
+			return new GenericResponse<String>(HttpStatus.CONFLICT, "User Already In The Room");
 
 		} else if (room.getUsers().size() >= MAX_USER_CAPACITY) {
-			return new GenericResponse<Room>(HttpStatus.NOT_ACCEPTABLE, "Room Capacity Is Full", null);
+			return new GenericResponse<String>(HttpStatus.NOT_ACCEPTABLE, "Room Capacity Is Full");
 
 		} else {
 
 			room.getUsers().add(userName);
 			roomRepository.save(room);
-			return new GenericResponse<Room>(HttpStatus.OK, "User jonied " + roomName, room);
+			return new GenericResponse<Room>(HttpStatus.OK, room);
 
 		}
 	}
 
-	
-	public GenericResponse<List<String>> getUsesInRoom(String roomName){
+	public GenericResponse<?> getUsesInRoom(String roomName) {
 		Room room = roomRepository.findByName(roomName);
-		
-		if (room == null) {
-			return new GenericResponse<List<String>>(HttpStatus.FORBIDDEN, "Could Not Find The With Given Credentials", null);
 
-		}else {
+		if (room == null) {
+			return new GenericResponse<String>(HttpStatus.FORBIDDEN, "Could Not Find A Room With Given Credentials");
+
+		} else {
 			List<String> userList = room.getUsers();
-			return new GenericResponse<List<String>>(HttpStatus.FORBIDDEN, "Users List Found", userList);
+			return new GenericResponse<List<String>>(HttpStatus.OK, userList);
 
 		}
-		
+
+	}
+
+	public GenericResponse<?> deleteRoom(String roomName, String roomPassword) {
+
+		Room room = roomRepository.findByNameAndPassword(roomName, roomPassword);
+
+		if (room == null) {
+			return new GenericResponse<String>(HttpStatus.FORBIDDEN,
+					"Could Not Find A Room The With Given Credentials");
+
+		} else {
+
+			roomRepository.delete(room);
+			return new GenericResponse<Room>(HttpStatus.OK, room);
+
+		}
+	}
+
+	public GenericResponse<?> deleteUserFromRoom(String userName, String roomName, String roomPassword) {
+
+		Room room = roomRepository.findByNameAndPassword(roomName, roomPassword);
+
+		if (room == null) {
+			return new GenericResponse<String>(HttpStatus.FORBIDDEN, "Could Not Find The Room  With Given Credentials");
+
+		} else if (!room.getUsers().contains(userName)) {
+
+			return new GenericResponse<String>(HttpStatus.FORBIDDEN, "User Not In The Roon");
+
+		} else {
+			room.getUsers().remove(room.getUsers().indexOf(userName));
+			roomRepository.save(room);
+			return new GenericResponse<Room>(HttpStatus.OK, room);
+
+		}
 	}
 }
