@@ -17,9 +17,7 @@ public class WSConfig implements WebSocketMessageBrokerConfigurer {
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		
-		//for sending messages
-		//Setting an end point 
-		//With making cross orijin all " (*) "  you can call this end point anywhere
+		
 		registry.addEndpoint("/chat").setAllowedOrigins("http://localhost:3000").withSockJS();
 			
 		
@@ -29,7 +27,7 @@ public class WSConfig implements WebSocketMessageBrokerConfigurer {
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		//for getting messages
 		registry.enableSimpleBroker("/topic");
-		
+		registry.setApplicationDestinationPrefixes("/app");
 	}
 	
 
