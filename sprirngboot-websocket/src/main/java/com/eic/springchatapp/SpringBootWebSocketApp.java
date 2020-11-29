@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.repository.Query;
 
 import com.eic.springchatapp.api.model.Room;
 import com.eic.springchatapp.api.repository.RoomRepository;
+import com.eic.springchatapp.api.repository.UserRepository;
+import com.eic.springchatapp.model.User;
 
 @SpringBootApplication
 public class SpringBootWebSocketApp implements CommandLineRunner {
@@ -19,15 +21,22 @@ public class SpringBootWebSocketApp implements CommandLineRunner {
 	}
 
 	@Autowired
-	RoomRepository repo;
+	RoomRepository roomRepo;
+	@Autowired
+	UserRepository userRepo;
 
 	@Override
 	public void run(String... args) throws Exception {
 
-		repo.deleteAll();
+		roomRepo.deleteAll();
+		userRepo.deleteAll();
 
-		repo.insert(new Room("room1", "123"));
-		repo.insert(new Room("room2", "456"));
+		roomRepo.insert(new Room("room1", "123"));
+		roomRepo.insert(new Room("room2", "456"));
+		User user = new User("myname","mypassword");
+		
+		
+		userRepo.insert(user);
 
 	}
 

@@ -1,5 +1,7 @@
 package com.eic.springchatapp.controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -27,9 +29,9 @@ public class ChatController {
 
 	@MessageMapping("/chat/{roomID}")
 	// @SendTo("/topic")
-	public void chatEndPoint(@DestinationVariable String roomID, @Payload MessageTemplate messageTemplate) {
+	public void chatEndPoint(@DestinationVariable String roomID, @Payload MessageTemplate messageTemplate , Principal principal){
 
-		System.out.println(messageTemplate);
+		System.out.println(principal.getName() +" principl");
 		messagingTemp.convertAndSend("/topic/" + roomID, messageTemplate);
 	}
 	
