@@ -6,8 +6,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -17,17 +19,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	protected void configure(HttpSecurity http) throws Exception {
 
-		 http
-         .httpBasic().disable()
-         .authorizeRequests().antMatchers("/**").permitAll()
-         .anyRequest().denyAll();
+		http
 
-	 
-	 
-	        //Registring custom AProvider
-	      http.authenticationProvider(authProvider);
-	    
-	    
+				.csrf().disable()
+
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+
+				.authorizeRequests()
+
+				//.antMatchers(HttpMethod.POST, "/user/login").permitAll()
+				.anyRequest().authenticated()
+				.and()
+				.httpBasic();
+				
+
+		// Registering custom AProvider
+		http.authenticationProvider(authProvider);
 
 	}
 
@@ -37,11 +44,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		return NoOpPasswordEncoder.getInstance();
 	}
 
-	// Needed to overide and add bean annotaion
+	// Needed to override and add bean annotation
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-
+	
+	 
 }

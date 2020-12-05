@@ -1,6 +1,7 @@
 package com.eic.springchatapp.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,12 @@ import org.springframework.stereotype.Service;
 import com.eic.springchatapp.api.model.GenericResponse;
 import com.eic.springchatapp.api.model.Room;
 import com.eic.springchatapp.api.repository.RoomRepository;
+import com.eic.springchatapp.api.repository.UserRepository;
+import com.eic.springchatapp.model.User;
+
+
+
+
 
 @Service
 public class RoomService {
@@ -18,6 +25,12 @@ public class RoomService {
 	@Autowired
 	RoomRepository roomRepository;
 
+	
+
+	@Autowired
+	UserRepository userRepository;
+	
+	
 	public GenericResponse<?> createRoom(String userName, String roomName, String roomPassword) {
 
 		if (roomRepository.findByName(roomName) == null) {
@@ -49,9 +62,14 @@ public class RoomService {
 			return new GenericResponse<String>(HttpStatus.NOT_ACCEPTABLE, "Room Capacity Is Full");
 
 		} else {
-
+			
 			room.getUsers().add(userName);
 			roomRepository.save(room);
+			
+			User user = userRepository.findByName(userName);
+			user.getRooms().add(roomName);
+			userRepository.save(user);
+			
 			return new GenericResponse<Room>(HttpStatus.OK, room);
 
 		}
@@ -104,5 +122,38 @@ public class RoomService {
 			return new GenericResponse<Room>(HttpStatus.OK, room);
 
 		}
+	}
+	
+	public boolean isUserInRoom(String roomId ,String username) {
+		
+		Room room = roomRepository.findOneById(roomId);
+		
+
+		
+		if(room == null) {
+			return false;
+		}else if (!room.getUsers().contains(username)) {
+			return false;
+		}else {
+			return true;	
+		}
+	}
+	
+	public void disconnectUser(String username) {
+		
+		
+		User user = userRepository.findByName(username);
+		Room room;
+		
+		
+		for (String roomname : user.getRooms() ) {
+			room = roomRepository.findByName(roomname); 
+			room.getUsers().remove(username);
+			
+			
+			roomRepository.save(room);
+		}
+		user.getRooms().clear();
+		userRepository.save(user);
 	}
 }

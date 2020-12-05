@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.repository.Query;
+
 
 import com.eic.springchatapp.api.model.Room;
 import com.eic.springchatapp.api.repository.RoomRepository;
@@ -33,10 +31,15 @@ public class SpringBootWebSocketApp implements CommandLineRunner {
 
 		roomRepo.insert(new Room("room1", "123"));
 		roomRepo.insert(new Room("room2", "456"));
-		User user = new User("myname","mypassword");
 		
 		
-		userRepo.insert(user);
+		userRepo.insert(new User("myname","mypassword"));
+		userRepo.insert(new User("111","222"));
+		userRepo.insert(new User("11","22"));
+
+
+		
+
 
 	}
 

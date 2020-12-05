@@ -1,4 +1,4 @@
-package com.eic.springchatapp.interceptor;
+package com.eic.springchatapp.websocket;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -13,18 +13,22 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.eic.springchatapp.security.UserAuthenticationProvider;
+import com.eic.springchatapp.service.RoomService;
+
 
 
 
 @Component
 public class AuthChannelInterceptor implements ChannelInterceptor {
     
+	RoomService roomService;
 	
 	
 	UserAuthenticationProvider userAProvider;
-	 public AuthChannelInterceptor(UserAuthenticationProvider userAProvider) {
+	 public AuthChannelInterceptor(UserAuthenticationProvider userAProvider ,RoomService roomService) {
 		 
 		 this.userAProvider = userAProvider;
+		 this.roomService = roomService;
 	}
 	
 	
@@ -33,25 +37,34 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
 	public Message<?> preSend(final Message<?> message, final MessageChannel channel) throws AuthenticationException {
         final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        if (StompCommand.CONNECT == accessor.getCommand() || StompCommand.SEND == accessor.getCommand()) {
+        if (StompCommand.CONNECT == accessor.getCommand() ) {
              String username = accessor.getFirstNativeHeader("username");
              String password = accessor.getFirstNativeHeader("password");
 
              UsernamePasswordAuthenticationToken token= new UsernamePasswordAuthenticationToken(username,password);
              
              
- 			
+      
              Authentication auth=  userAProvider.authenticate(token);
-           
+                 
              SecurityContextHolder.getContext().setAuthentication(auth);
- 			 
-            accessor.setUser(auth);
-        
-            
-            
+             
+             accessor.setUser(auth);;
         }
+        
+        
+        if(StompCommand.DISCONNECT == accessor.getCommand()) {
+        	
+        	
+        	
+       
+        	roomService.disconnectUser(accessor.getUser().getName());
+        }
+            
+       
         return message;
     }
+	
 	
 }
 

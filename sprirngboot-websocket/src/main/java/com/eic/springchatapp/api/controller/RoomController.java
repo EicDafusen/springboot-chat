@@ -1,11 +1,9 @@
 package com.eic.springchatapp.api.controller;
 
-import java.util.List;
+import java.security.Principal;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.Valid;
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,16 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.eic.springchatapp.api.model.GenericRequest;
 import com.eic.springchatapp.api.model.GenericResponse;
-import com.eic.springchatapp.api.model.Room;
 import com.eic.springchatapp.api.repository.RoomRepository;
 import com.eic.springchatapp.service.RoomService;
-
-/*  	TODO
- * 
- * -Validation
- * 
- * 
- * */
 
 @RestController
 @RequestMapping("room")
@@ -41,10 +31,9 @@ public class RoomController {
 	@Autowired
 	RoomService roomService;
 
-	// Adding a new room and adding user in it
-
 	@PostMapping("/create")
-	ResponseEntity<?> addRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult) {
+	ResponseEntity<?> addRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult,
+			Principal principal) {
 
 		if (bindingResult.hasErrors()) {
 
@@ -63,9 +52,12 @@ public class RoomController {
 	}
 
 	@PostMapping("/join")
-	ResponseEntity<?> joinRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult) {
+	ResponseEntity<?> joinRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult,
+			Principal principal) {
+		System.out.println("sea");
 
 		if (bindingResult.hasErrors()) {
+
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
 
 		} else {
@@ -125,4 +117,5 @@ public class RoomController {
 
 		}
 	}
+
 }

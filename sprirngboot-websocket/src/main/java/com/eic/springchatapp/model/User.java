@@ -1,5 +1,8 @@
 package com.eic.springchatapp.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,6 +17,9 @@ public class User {
 
 	
 	private String password;
+	
+	private List<String> rooms = new ArrayList<String>();
+
 
 	public User(String name, String password) {
 		super();
@@ -21,6 +27,14 @@ public class User {
 		this.password = password;
 	}
 	
+	public List<String> getRooms() {
+		return rooms;
+	}
+
+	public void setRooms(List<String> users) {
+		this.rooms = users;
+	}
+
 	public User() {}
 
 	public String getName() {

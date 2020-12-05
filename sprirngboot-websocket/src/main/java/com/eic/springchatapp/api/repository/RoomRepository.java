@@ -7,6 +7,9 @@ import com.eic.springchatapp.api.model.Room;
 public interface RoomRepository extends MongoRepository<Room, String> {
 
 	public Room findByName(String name);
+	
+	public Room findOneById(String id);
+
 
 	public Room findByNameAndPassword(String name, String password);
 

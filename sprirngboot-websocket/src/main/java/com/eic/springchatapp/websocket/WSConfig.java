@@ -1,4 +1,4 @@
-package com.eic.springchatapp.config;
+package com.eic.springchatapp.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,8 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import com.eic.springchatapp.interceptor.AuthChannelInterceptor;
 import com.eic.springchatapp.security.UserAuthenticationProvider;
+import com.eic.springchatapp.service.RoomService;
 
 
 
@@ -21,27 +21,35 @@ public class WSConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Autowired
 	UserAuthenticationProvider userAuthenticationProvider;
+	@Autowired
+	RoomService roomService;
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		
-		
+
 		registry.addEndpoint("/chat").setAllowedOrigins("http://localhost:3000").withSockJS();
-			
-		
+	
+
+		registry.setErrorHandler( new WSErrorHandler());
 	}
 	
+	
+
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
 		//for getting messages
-		registry.enableSimpleBroker("/topic");
+		registry.enableSimpleBroker("/topic","/user");
+
 	}
+	
 	
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void configureClientInboundChannel(ChannelRegistration registration) {
-	    registration.setInterceptors(new AuthChannelInterceptor(userAuthenticationProvider));
+	    registration.setInterceptors(new AuthChannelInterceptor(userAuthenticationProvider,roomService));
+	    
 	}
 
 

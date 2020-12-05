@@ -1,5 +1,7 @@
 package com.eic.springchatapp.model;
 
+
+
 public class MessageTemplate {
 	
 	private String sender;
@@ -19,6 +21,11 @@ public class MessageTemplate {
 	@Override
 	public String toString() {
 		return "Message [sender=" + sender + ", content=" + content + "]";
+	}
+	public MessageTemplate(String sender, String content) {
+		super();
+		this.sender = sender;
+		this.content = content;
 	}
 	
 	
