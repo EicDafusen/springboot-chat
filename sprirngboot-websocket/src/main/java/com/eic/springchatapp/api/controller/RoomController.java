@@ -4,7 +4,6 @@ import java.security.Principal;
 
 import javax.validation.Valid;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,8 +41,8 @@ public class RoomController {
 
 		} else {
 
-			GenericResponse<?> Response = roomService.createRoom(genericRequest.getUsername(),
-					genericRequest.getRoomname(), genericRequest.getPassword());
+			GenericResponse<?> Response = roomService.createRoom(principal.getName(), genericRequest.getName(),
+					genericRequest.getPassword());
 
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 
@@ -54,16 +53,15 @@ public class RoomController {
 	@PostMapping("/join")
 	ResponseEntity<?> joinRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult,
 			Principal principal) {
-		System.out.println("sea");
 
 		if (bindingResult.hasErrors()) {
 
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 		} else {
 
-			GenericResponse<?> Response = roomService.addUserToRoom(genericRequest.getUsername(),
-					genericRequest.getRoomname(), genericRequest.getPassword());
+			GenericResponse<?> Response = roomService.addUserToRoom(principal.getName(), genericRequest.getName(),
+					genericRequest.getPassword());
 
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 		}
@@ -74,11 +72,11 @@ public class RoomController {
 	ResponseEntity<?> getUsersInRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult) {
 
 		if (bindingResult.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 		} else {
 
-			GenericResponse<?> Response = roomService.getUsesInRoom(genericRequest.getRoomname());
+			GenericResponse<?> Response = roomService.getUsesInRoom(genericRequest.getName());
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 
 		}
@@ -96,7 +94,7 @@ public class RoomController {
 					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 
 		} else {
-			GenericResponse<?> Response = roomService.deleteRoom(genericRequest.getRoomname(),
+			GenericResponse<?> Response = roomService.deleteRoom(genericRequest.getName(),
 					genericRequest.getPassword());
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 
@@ -104,15 +102,15 @@ public class RoomController {
 	}
 
 	@DeleteMapping("/user/delete")
-	ResponseEntity<?> deleteUserFromRoom(@RequestBody @Valid GenericRequest genericRequest,
-			BindingResult bindingResult) {
+	ResponseEntity<?> deleteUserFromRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult,
+			Principal principal) {
 
 		if (bindingResult.hasErrors()) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(bindingResult.getAllErrors());
-
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 		} else {
-			GenericResponse<?> Response = roomService.deleteUserFromRoom(genericRequest.getUsername(),
-					genericRequest.getRoomname(), genericRequest.getPassword());
+			GenericResponse<?> Response = roomService.deleteUserFromRoom(principal.getName(),
+					genericRequest.getName(), genericRequest.getPassword());
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 
 		}

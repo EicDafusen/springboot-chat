@@ -1,7 +1,6 @@
 package com.eic.springchatapp.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +36,7 @@ public class RoomService {
 
 			Room newRoom = new Room(roomName, roomPassword);
 
-			roomRepository.save(newRoom);
+			roomRepository.insert(newRoom);
 
 			return addUserToRoom(userName, roomName, roomPassword);
 

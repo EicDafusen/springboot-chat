@@ -1,15 +1,20 @@
 package com.eic.springchatapp.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eic.springchatapp.api.model.GenericRequest;
 import com.eic.springchatapp.api.repository.UserRepository;
 import com.eic.springchatapp.model.User;
 import com.eic.springchatapp.security.UserAuthenticationProvider;
@@ -41,22 +46,21 @@ public class UserController {
 
 	
 	@GetMapping("/signIn")
-	public void signInUser() {
+	public  ResponseEntity<?> signInUser(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult) {
 
-		try {
 
-			// Adding dummy user for now
-			User user = new User("name", "password");
+		if (bindingResult.hasErrors()) {
 
-			userRepository.save(user);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
+		} else {
 
-		} catch (Exception e) {
-			System.out.println(e);
-			return;
-
+			User newUser = new User(  genericRequest.getName() , genericRequest.getPassword());
+			
+			userRepository.insert(newUser);
+			
+			return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
 		}
-
-		return;
 	}
 
 }
