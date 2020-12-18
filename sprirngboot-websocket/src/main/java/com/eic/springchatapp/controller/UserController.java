@@ -55,7 +55,7 @@ public class UserController {
 					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 		} else {
 
-			User newUser = new User(  genericRequest.getName() , genericRequest.getPassword());
+			User newUser = new User(  genericRequest.getRoomname() , genericRequest.getPassword());
 			
 			userRepository.insert(newUser);
 			

@@ -38,10 +38,11 @@ public class RoomController {
 
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
+			
 
 		} else {
 
-			GenericResponse<?> Response = roomService.createRoom(principal.getName(), genericRequest.getName(),
+			GenericResponse<?> Response = roomService.createRoom(principal.getName(), genericRequest.getRoomname(),
 					genericRequest.getPassword());
 
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
@@ -60,7 +61,7 @@ public class RoomController {
 					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 		} else {
 
-			GenericResponse<?> Response = roomService.addUserToRoom(principal.getName(), genericRequest.getName(),
+			GenericResponse<?> Response = roomService.addUserToRoom(principal.getName(), genericRequest.getRoomname(),
 					genericRequest.getPassword());
 
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
@@ -76,7 +77,7 @@ public class RoomController {
 					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 		} else {
 
-			GenericResponse<?> Response = roomService.getUsesInRoom(genericRequest.getName());
+			GenericResponse<?> Response = roomService.getUsersInRoom(genericRequest.getRoomname());
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 
 		}
@@ -94,14 +95,14 @@ public class RoomController {
 					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 
 		} else {
-			GenericResponse<?> Response = roomService.deleteRoom(genericRequest.getName(),
+			GenericResponse<?> Response = roomService.deleteRoom(genericRequest.getRoomname(),
 					genericRequest.getPassword());
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 
 		}
 	}
 
-	@DeleteMapping("/user/delete")
+	@DeleteMapping("/leave")
 	ResponseEntity<?> deleteUserFromRoom(@RequestBody @Valid GenericRequest genericRequest, BindingResult bindingResult,
 			Principal principal) {
 
@@ -110,7 +111,7 @@ public class RoomController {
 					.body(bindingResult.getAllErrors().get(0).getDefaultMessage());
 		} else {
 			GenericResponse<?> Response = roomService.deleteUserFromRoom(principal.getName(),
-					genericRequest.getName(), genericRequest.getPassword());
+					genericRequest.getRoomname(), genericRequest.getPassword());
 			return ResponseEntity.status(Response.getStatusCode()).body(Response.getData());
 
 		}

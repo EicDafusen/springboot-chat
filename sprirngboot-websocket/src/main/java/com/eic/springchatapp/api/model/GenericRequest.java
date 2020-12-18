@@ -7,7 +7,7 @@ public class GenericRequest {
 
 	@Size(min = 2, max = 35, message = "Roomname must be 2-35 characters long.")
 	@NotNull(message = "Room name cannot be null.")
-	private String name;
+	private String roomname;
 
 	@Size(min = 3, max = 35, message = "Password must be 3-35 characters long.")
 	@NotNull(message = "Name cannot be null.")
@@ -15,7 +15,7 @@ public class GenericRequest {
 
 	public GenericRequest(String roomname, String password) {
 		super();
-		this.name = roomname;
+		this.roomname = roomname;
 		this.password = password;
 	}
 
@@ -23,12 +23,12 @@ public class GenericRequest {
 
 	}
 
-	public String getName() {
-		return name;
+	public String getRoomname() {
+		return roomname;
 	}
 
-	public void setName(String roomname) {
-		this.name = roomname;
+	public void setRoomname(String roomname) {
+		this.roomname = roomname;
 	}
 
 	public String getPassword() {

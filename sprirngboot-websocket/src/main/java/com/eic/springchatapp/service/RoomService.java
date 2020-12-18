@@ -74,7 +74,7 @@ public class RoomService {
 		}
 	}
 
-	public GenericResponse<?> getUsesInRoom(String roomName) {
+	public GenericResponse<?> getUsersInRoom(String roomName) {
 		Room room = roomRepository.findByName(roomName);
 
 		if (room == null) {
@@ -97,7 +97,15 @@ public class RoomService {
 					"Could Not Find A Room The With Given Credentials");
 
 		} else {
-
+			
+			
+			
+			for( String username : room.getUsers() ) {
+				
+				User user =	userRepository.findByName(username);
+				user.getRooms().remove( user.getRooms().indexOf(room.getName()));
+				userRepository.save(user);
+			}
 			roomRepository.delete(room);
 			return new GenericResponse<Room>(HttpStatus.OK, room);
 
@@ -113,9 +121,14 @@ public class RoomService {
 
 		} else if (!room.getUsers().contains(userName)) {
 
-			return new GenericResponse<String>(HttpStatus.FORBIDDEN, "User Not In The Roon");
+			return new GenericResponse<String>(HttpStatus.FORBIDDEN, "User Is Not In The Roon");
 
 		} else {
+			
+			User user =	userRepository.findByName(userName);
+			user.getRooms().remove( user.getRooms().indexOf(roomName));
+			userRepository.save(user);
+			
 			room.getUsers().remove(room.getUsers().indexOf(userName));
 			roomRepository.save(room);
 			return new GenericResponse<Room>(HttpStatus.OK, room);
